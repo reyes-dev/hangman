@@ -49,15 +49,16 @@ class Game
       puts @hidden_word.join('')
       self.input_guess
       self.check(@letter, @random_word, @hidden_word)
-      @tries = @tries - 1
+      @tries = tries - 1 unless @random_word.any?(@letter)
     end
     puts "The word was #{random_word.join('')}!"
+    puts @game_over ? "You won!" : "You lost!"
   end
 
   def input_guess
     loop do
       puts "Enter a letter: "
-      @letter = gets.chomp  
+      @letter = gets.chomp
       break if @letter.match?(/^[a-zA-Z]{1}$/)
     end
   end
