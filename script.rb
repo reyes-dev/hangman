@@ -43,7 +43,7 @@ class Game
   def play
     until @tries == 0 || game_over
       puts "You have #{@tries} tries left!"
-      puts "Wrong letter guesses: #{@wrong_letters.join(', ')}"
+      puts "Wrong letter guesses: #{@wrong_letters.uniq.join(', ')}"
       puts @hidden_word.join('')
       self.input_guess
       check(@letter, @random_word, @hidden_word)
@@ -59,7 +59,7 @@ class Game
   def input_guess
     loop do
       puts 'Enter a letter: '
-      @letter = gets.chomp
+      @letter = gets.chomp.downcase
       break if @letter.match?(/^[a-zA-Z]{1}$/)
     end
   end
