@@ -3,30 +3,26 @@
 # store it in a variable
 module DictionaryWord
   def PickWord
-    File.read('dictionary.txt').split(' ').select {
-      |w| w.length > 4 && w.length < 13 
-     }.sample.split('')
+    File.read('dictionary.txt').split(' ').select do |w|
+      w.length > 4 && w.length < 13
+    end.sample.split('')
   end
 end
 
 module Checkable
   def letter_check(letter, word, hidden_word)
     word.each_with_index do |char, idx|
-      if letter == char
-        hidden_word[idx] = char
-      end
+      hidden_word[idx] = char if letter == char
     end
   end
 
   def game_over_check(word, hidden_word)
-    if word == hidden_word
-      @game_over = true
-    end
+    @game_over = true if word == hidden_word
   end
 
   def check(letter, word, hidden_word)
-    self.letter_check(letter, word, hidden_word)
-    self.game_over_check(word, hidden_word)
+    letter_check(letter, word, hidden_word)
+    game_over_check(word, hidden_word)
   end
 end
 
@@ -48,16 +44,16 @@ class Game
       puts "You have #{@tries} tries left!"
       puts @hidden_word.join('')
       self.input_guess
-      self.check(@letter, @random_word, @hidden_word)
+      check(@letter, @random_word, @hidden_word)
       @tries = tries - 1 unless @random_word.any?(@letter)
     end
     puts "The word was #{random_word.join('')}!"
-    puts @game_over ? "You won!" : "You lost!"
+    puts @game_over ? 'You won!' : 'You lost!'
   end
 
   def input_guess
     loop do
-      puts "Enter a letter: "
+      puts 'Enter a letter: '
       @letter = gets.chomp
       break if @letter.match?(/^[a-zA-Z]{1}$/)
     end
