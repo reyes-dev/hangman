@@ -1,6 +1,5 @@
-# load the dictionary
-# randomly select a word
-# store it in a variable
+require 'yaml'
+
 module DictionaryWord
   def PickWord
     File.read('dictionary.txt').split(' ').select do |w|
@@ -32,18 +31,25 @@ class Game
 
   attr_accessor :random_word, :hidden_word, :tries, :game_over, :letter, :wrong_letters
 
-  def initialize
-    @random_word = self.PickWord
-    @hidden_word = Array.new(@random_word.length, '_')
-    @tries = 6
-    @game_over = false
-    @wrong_letters = []
+  def initialize(random_word, hidden_word, tries, game_over, wrong_letters)
+    # default values for creation
+    # @random_word = self.PickWord
+    # @hidden_word = Array.new(@random_word.length, '_')
+    # @tries = 6
+    # @game_over = false
+    # @wrong_letters = []
+    @random_word = random_word
+    @hidden_word = hidden_word
+    @tries = tries
+    @game_over = game_over
+    @wrong_letters = wrong_letters
   end
-
+  # give choice to start a new game
+  # or load an old game from a list of files in 'saves'
   def play
     until @tries == 0 || game_over
       puts "You have #{@tries} tries left!"
-      puts "Wrong letter guesses: #{@wrong_letters.uniq.join(', ')}"
+      puts "Wrong letter guesses: #{@wrong_letters.uniq.join(', ')}" unless @wrong_letters.empty?
       puts @hidden_word.join('')
       self.input_guess
       check(@letter, @random_word, @hidden_word)
@@ -63,8 +69,29 @@ class Game
       break if @letter.match?(/^[a-zA-Z]{1}$/)
     end
   end
+
+  # take an existing game object
+  # convert it to a new YAML file stored in 'saves' folder
+  # attempt to hard-load it first
+  # also try to serialize a game in mid-play
+  def to_yaml
+    YAML.dump ({
+      :random_word => @random_word,
+      :hidden_word => @hidden_word,
+      :tries => @tries,
+      :game_over => @game_over,
+      :wrong_letters => @wrong_letters
+    })
+  end
+
+  def self.from_yaml(string)
+    data = YAML.load string
+    self.new(data[:random_word], data[:hidden_word], data[:tries], data[:game_over], data[:wrong_letters])
+  end
 end
 
-my_game = Game.new
-print my_game.random_word
-my_game.play
+ #game = Game.new
+ #File.open('saves/game_01.yaml', 'w') { |file| file.write(game.to_yaml) }
+new_game = Game.from_yaml(YAML.load File.read('saves/game_01.yaml').to_yaml)
+new_game.play
+# new_dave = Person.from_yaml(YAML.load File.read('storage.yaml').to_yaml)
