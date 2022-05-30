@@ -44,8 +44,7 @@ class Game
     @game_over = game_over
     @wrong_letters = wrong_letters
   end
-  # give choice to start a new game
-  # or load an old game from a list of files in 'saves'
+
   def play
     until @tries == 0 || game_over
       puts "You have #{@tries} tries left!"
@@ -57,7 +56,6 @@ class Game
         @tries = tries - 1
         @wrong_letters.push(@letter)
       end
-      #File.open('saves/game_01.yaml', 'w') { |file| file.write(self.to_yaml) }
     end
     puts "The word was #{random_word.join('')}!"
     puts @game_over ? 'You won!' : 'You lost!'
@@ -65,17 +63,19 @@ class Game
 
   def input_guess
     loop do
-      puts 'Enter a letter or save/exit: '
+      puts 'Enter a letter, save or exit: '
       @letter = gets.chomp.downcase
-      #break if @letter.match?(/^[a-zA-Z]{1}$/)
-      @letter.match?(/^[a-zA-Z]{1}$/) ? break : @letter.match?('save') ? save_game : nil
+      if @letter.match?(/^[a-zA-Z]{1}$/)
+        break
+      elsif @letter.match?('save')
+        save_game
+      elsif @letter.match?('exit')
+        exit
+      end
+      #@letter.match?(/^[a-zA-Z]{1}$/) ? break : @letter.match?('save') ? save_game : nil
     end
   end
 
-  # take an existing game object
-  # convert it to a new YAML file stored in 'saves' folder
-  # attempt to hard-load it first
-  # also try to serialize a game in mid-play
   def to_yaml
     YAML.dump ({
       :random_word => @random_word,
@@ -95,11 +95,11 @@ class Game
     puts "Enter save game filename: "
     save_name = gets.chomp.downcase
     File.open("saves/#{save_name}.yaml", 'w') { |file| file.write(self.to_yaml) }
-    exit
   end
 
   def load_game
     begin
+    exit if Dir.children("./saves").empty?
     puts Dir.children("./saves").map { |fn| fn.gsub('.yaml', '') }
     puts "Enter filename you want to load: "
     load_name = gets.chomp.downcase
