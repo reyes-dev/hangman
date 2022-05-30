@@ -65,7 +65,7 @@ class Game
 
   def input_guess
     loop do
-      puts 'Enter a letter or save: '
+      puts 'Enter a letter or save/exit: '
       @letter = gets.chomp.downcase
       #break if @letter.match?(/^[a-zA-Z]{1}$/)
       @letter.match?(/^[a-zA-Z]{1}$/) ? break : @letter.match?('save') ? save_game : nil
@@ -95,14 +95,20 @@ class Game
     puts "Enter save game filename: "
     save_name = gets.chomp.downcase
     File.open("saves/#{save_name}.yaml", 'w') { |file| file.write(self.to_yaml) }
+    exit
   end
 
   def load_game
   end
 
+  def start
+    puts "Type 'load' to load a game, or any key to start a new game: "
+    gets.chomp.match?('load') ? load_game : play
+  end
+
 end
 
- game = Game.new.play
+ game = Game.new.start
 # File.open('saves/game_01.yaml', 'w') { |file| file.write(game.to_yaml) }
 # new_game = Game.from_yaml(YAML.load File.read('saves/game_01.yaml').to_yaml)
 # new_game.play

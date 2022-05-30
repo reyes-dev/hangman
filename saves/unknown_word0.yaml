@@ -1,0 +1,24 @@
+---
+:random_word:
+- u
+- n
+- d
+- e
+- r
+- t
+- a
+- k
+- e
+:hidden_word:
+- _
+- _
+- _
+- _
+- _
+- _
+- _
+- _
+- _
+:tries: 6
+:game_over: false
+:wrong_letters: []
