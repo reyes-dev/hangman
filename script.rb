@@ -72,7 +72,6 @@ class Game
       elsif @letter.match?('exit')
         exit
       end
-      #@letter.match?(/^[a-zA-Z]{1}$/) ? break : @letter.match?('save') ? save_game : nil
     end
   end
 
