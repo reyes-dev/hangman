@@ -1,18 +1,31 @@
 ---
 :random_word:
-- w
-- i
 - c
-- k
+- o
+- n
+- s
+- t
+- i
+- t
+- u
+- t
 - e
-- d
 :hidden_word:
 - _
 - _
 - _
+- s
 - _
 - _
 - _
-:tries: 6
+- _
+- _
+- e
+:tries: 1
 :game_over: false
-:wrong_letters: []
+:wrong_letters:
+- a
+- m
+- a
+- q
+- a

@@ -31,13 +31,13 @@ class Game
 
   attr_accessor :random_word, :hidden_word, :tries, :game_over, :letter, :wrong_letters
 
-  def initialize(random_word, hidden_word, tries, game_over, wrong_letters)
-    # default values for creation
-    # @random_word = self.PickWord
-    # @hidden_word = Array.new(@random_word.length, '_')
-    # @tries = 6
-    # @game_over = false
-    # @wrong_letters = []
+  def initialize(
+    random_word = self.PickWord,
+    hidden_word = Array.new(random_word.length, '_'),
+    tries = 6,
+    game_over = false,
+    wrong_letters = []
+  )
     @random_word = random_word
     @hidden_word = hidden_word
     @tries = tries
@@ -57,6 +57,7 @@ class Game
         @tries = tries - 1
         @wrong_letters.push(@letter)
       end
+      #File.open('saves/game_01.yaml', 'w') { |file| file.write(self.to_yaml) }
     end
     puts "The word was #{random_word.join('')}!"
     puts @game_over ? 'You won!' : 'You lost!'
@@ -64,9 +65,10 @@ class Game
 
   def input_guess
     loop do
-      puts 'Enter a letter: '
+      puts 'Enter a letter or save: '
       @letter = gets.chomp.downcase
-      break if @letter.match?(/^[a-zA-Z]{1}$/)
+      #break if @letter.match?(/^[a-zA-Z]{1}$/)
+      @letter.match?(/^[a-zA-Z]{1}$/) ? break : @letter.match?('save') ? save_game : nil
     end
   end
 
@@ -88,10 +90,19 @@ class Game
     data = YAML.load string
     self.new(data[:random_word], data[:hidden_word], data[:tries], data[:game_over], data[:wrong_letters])
   end
+
+  def save_game
+    puts "Enter save game filename: "
+    save_name = gets.chomp.downcase
+    File.open("saves/#{save_name}.yaml", 'w') { |file| file.write(self.to_yaml) }
+  end
+
+  def load_game
+  end
+
 end
 
- #game = Game.new
- #File.open('saves/game_01.yaml', 'w') { |file| file.write(game.to_yaml) }
-new_game = Game.from_yaml(YAML.load File.read('saves/game_01.yaml').to_yaml)
-new_game.play
-# new_dave = Person.from_yaml(YAML.load File.read('storage.yaml').to_yaml)
+ game = Game.new.play
+# File.open('saves/game_01.yaml', 'w') { |file| file.write(game.to_yaml) }
+# new_game = Game.from_yaml(YAML.load File.read('saves/game_01.yaml').to_yaml)
+# new_game.play
