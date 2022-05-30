@@ -99,16 +99,20 @@ class Game
   end
 
   def load_game
+    begin
+    puts Dir.children("./saves").map { |fn| fn.gsub('.yaml', '') }
+    puts "Enter filename you want to load: "
+    load_name = gets.chomp.downcase
+    Game.from_yaml(YAML.load File.read("saves/#{load_name}.yaml").to_yaml).play
+    rescue
+      retry
+    end
   end
 
   def start
     puts "Type 'load' to load a game, or any key to start a new game: "
     gets.chomp.match?('load') ? load_game : play
   end
-
 end
 
- game = Game.new.start
-# File.open('saves/game_01.yaml', 'w') { |file| file.write(game.to_yaml) }
-# new_game = Game.from_yaml(YAML.load File.read('saves/game_01.yaml').to_yaml)
-# new_game.play
+Game.new.start
